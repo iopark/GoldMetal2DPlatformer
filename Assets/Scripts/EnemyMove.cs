@@ -7,6 +7,7 @@ public class EnemyMove : MonoBehaviour
     Animator anim;
     Rigidbody2D rigid;
     SpriteRenderer spriteRenderer;
+    CapsuleCollider2D capsulecollider; 
 
     [Header("AI Related")]
     public int nextMove;  // 행동지표를 결정할 변수 하나를 생성 
@@ -15,10 +16,15 @@ public class EnemyMove : MonoBehaviour
     private Coroutine aiRun; 
     private void Awake()
     {
+        capsulecollider = GetComponent<CapsuleCollider2D>();
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
-        aiRun = StartCoroutine(BasicAI()); 
         spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    private void Start()
+    {
+        aiRun = StartCoroutine(BasicAI());
     }
 
     private void FixedUpdate()
@@ -52,6 +58,7 @@ public class EnemyMove : MonoBehaviour
         {
             nextThinkTime = Random.Range(2f, 5f);
             Think();
+            Debug.Log(nextThinkTime); 
             yield return new WaitForSeconds(nextThinkTime); 
         }
     }
@@ -70,5 +77,19 @@ public class EnemyMove : MonoBehaviour
     private void OnDestroy()
     {
         StopCoroutine(aiRun);
+    }
+
+    public void OnDamage()
+    {
+        // Sprite change 
+        spriteRenderer.color = Color.gray;
+        // Sprite flip 
+        spriteRenderer.flipY = true;
+        // Collider disable 
+        capsulecollider.enabled = false;
+        // Die Effect Jump 
+        rigid.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
+        // Destroy 
+        Destroy(gameObject, 5f);
     }
 }
