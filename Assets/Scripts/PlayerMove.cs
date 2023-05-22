@@ -28,6 +28,7 @@ public class PlayerMove : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         rigidbody = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        capsuleCollider = GetComponent<CapsuleCollider2D>();
     }
     private void Update()
     {
@@ -142,6 +143,7 @@ public class PlayerMove : MonoBehaviour
         {
             cycle = true; 
             OnDamaged(collision.transform.position);
+
             yield return new WaitForSeconds(3); 
         }
         OffDamage();
@@ -158,7 +160,7 @@ public class PlayerMove : MonoBehaviour
     /// <param name="target">피격하는 대상 </param>
     private void OnDamaged(Vector2 target)
     {
-        GameManager.Data.HealthDown(); 
+        GameManager.Data.HealthDown();
         //Change Layer( if damaged) 
         gameObject.layer = 11; // layer에 해당하는 int 값을 이용하여 layer 변경 
         //View Alpha
@@ -188,7 +190,7 @@ public class PlayerMove : MonoBehaviour
         // Sprite flip 
         spriteRenderer.flipY = true;
         // Collider disable 
-        capsuleCollider.enabled = false;
+        //capsuleCollider.enabled = false;
         // Die Effect Jump 
         rigidbody.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
     }
