@@ -8,13 +8,16 @@ public class PlayerMove : MonoBehaviour
 {
     [Header("Movement Related")]
     public float maxSpeed;
-    public float jumpPower; 
+    public float jumpPower;
 
+    [Header("Player Composition")]
     Rigidbody2D rigidbody;
     SpriteRenderer spriteRenderer;
     Animator anim;
+    CapsuleCollider2D capsuleCollider;
 
-
+    [Header("Audio Related")]
+    private AudioSource audioSource;
     private void Start()
     {
         jumpPower = 15;
@@ -94,11 +97,14 @@ public class PlayerMove : MonoBehaviour
     {
         if (collision.gameObject.layer == 9)
         {
-            if(rigidbody.velocity.y <0 && transform.position.y > collision.transform.position.y && collision.gameObject.tag == "Enemy")
+            if (rigidbody.velocity.y < 0 && transform.position.y > collision.transform.position.y && collision.gameObject.tag == "Enemy")
             {
                 OnAttack(collision.transform);
             }
-            DamageReact = StartCoroutine(DamageCycle(collision));
+            else
+            {
+                DamageReact = StartCoroutine(DamageCycle(collision));
+            }
             //StopCoroutine(DamageReact); 
         }
     }
@@ -109,13 +115,13 @@ public class PlayerMove : MonoBehaviour
         {
             //item 을 먹었을때 생기는 변화 
             // Earn Point 
-            GameManager.Instance.stagePoint += 100; 
+            GameManager.Data.GetCoin(collision.gameObject); 
             // Deactive Item 
-            Destroy(collision.gameObject); 
         }
         else if (collision.gameObject.tag == "Finish")
         {
             //move to Next Stage. (Controlled by GameManager) 
+            GameManager.Data.NextStage(); 
         }
     }
 
@@ -147,11 +153,12 @@ public class PlayerMove : MonoBehaviour
     /// 2. 맞았을때 나타나는 현상들 
     /// 2-1. 색상 변화 
     /// 2-2. 밀림 현상 
+    /// 추가적으로 이렇게 공격받은 상황에 대해서 작명하게되면, 체력이 닳게 되는 모든상황에 대해서 적용가능한 함수로 작성이 가능하여지겠다. 
     /// </summary>
     /// <param name="target">피격하는 대상 </param>
     private void OnDamaged(Vector2 target)
     {
-
+        GameManager.Data.HealthDown(); 
         //Change Layer( if damaged) 
         gameObject.layer = 11; // layer에 해당하는 int 값을 이용하여 layer 변경 
         //View Alpha
@@ -175,5 +182,15 @@ public class PlayerMove : MonoBehaviour
         spriteRenderer.color = Color.white;
     }
 
+    public void onDeath()
+    {
+        spriteRenderer.color = Color.gray;
+        // Sprite flip 
+        spriteRenderer.flipY = true;
+        // Collider disable 
+        capsuleCollider.enabled = false;
+        // Die Effect Jump 
+        rigidbody.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
+    }
 
 }

@@ -38,7 +38,7 @@ public class EnemyMove : MonoBehaviour
         // Unit 을 통일하면 이렇게 파라미터값으로 벡터의 길이가 필요한 경우 적용이 편리하여진다. 
         if (rayHit.collider == null)
         {
-            Debug.Log("Nothing here"); 
+            //Debug.Log("Nothing here"); 
             Turn(); 
         }
     }
@@ -47,7 +47,7 @@ public class EnemyMove : MonoBehaviour
     {
         nextMove = nextMove * (-1); // change to opposite direction 
         new WaitForSeconds(nextThinkTime);
-        Debug.Log($"{nextThinkTime}");
+        //Debug.Log($"{nextThinkTime}");
         spriteRenderer.flipX = nextMove == 1; //원래 기존의 flip과 충돌 발생이 되니 수정한다. 
     }
 
@@ -58,7 +58,7 @@ public class EnemyMove : MonoBehaviour
         {
             nextThinkTime = Random.Range(2f, 5f);
             Think();
-            Debug.Log(nextThinkTime); 
+            //Debug.Log(nextThinkTime); 
             yield return new WaitForSeconds(nextThinkTime); 
         }
     }

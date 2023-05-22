@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance; 
-
+    public static GameManager instance;
+    public static DataManager dataManager; 
     public static GameManager Instance
     {
         get { return instance; }
     }
-    public int totalPoint;
-    public int stagePoint;
-    public int stageIndex;
-
+    public static DataManager Data
+    {
+        get { return dataManager; }
+    }
     private void Awake()
     {
         if (instance != null)
@@ -21,7 +21,8 @@ public class GameManager : MonoBehaviour
             Destroy(this); 
         }
         instance = this;
-        DontDestroyOnLoad(this); 
+        DontDestroyOnLoad(this);
+        SetManagers(); 
     }
 
     private void OnDestroy()
@@ -31,4 +32,12 @@ public class GameManager : MonoBehaviour
             instance = null; 
         }
     }
+
+    private void SetManagers()
+    {
+        GameObject datamanager = new GameObject() { name = "Data Manager" }; 
+        datamanager.transform.SetParent(transform);
+        dataManager = datamanager.AddComponent<DataManager>();
+    }
+
 }
